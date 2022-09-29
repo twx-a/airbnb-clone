@@ -1,0 +1,76 @@
+<div class="container mt-4">
+  <div class="row mt-3 justify-content-around">
+    <div class="col-5 border rounded-3 shadow-sm py-4 px-5 bg-light">
+      <h2>Booking #<%= @booking.id %> <%= @booking.accepted && @booking.payment_received ? "Confirmed" : "Not Confirmed" %></h2>
+      <p><i class="fa-solid fa-location-dot"></i> <%= @booking.flat.location %></p>
+      <p><i class="fa-solid fa-person"></i> Number of Guests: <%= @booking.num_guests %></p>
+      <p><i class="fa-solid fa-calendar-days"></i> Start Date: <%= @booking.start_date %></p>
+      <p><i class="fa-solid fa-calendar-days"></i> End Date: <%= @booking.end_date %></p>
+
+      <br>
+
+      <p><strong>Payment Status: </strong><%= @booking.payment_received.nil? ? "Payment Pending" : "Payment Received" %></p>
+      <p><strong>Host Acceptance Status: </strong>
+        <% if @booking.accepted.nil? %>
+          <%= "Pending Host's Acceptance" %>
+        <% else %>
+          <% if @booking.accepted %>
+            <%= "Booking Accepted" %>
+          <% else %>
+            <%= "Booking Rejected" %>
+          <% end %>
+        <% end %>
+      </p>
+
+       <div class="row">
+        <% if policy(@booking).edit? %>
+          <div class="booking-btn col-2 me-5">
+            <%= link_to "Edit Booking", edit_booking_path(@booking), class: "btn btn-outline-primary" %>
+          </div>
+        <% end %>
+
+        <% if policy(@booking).destroy? %>
+          <div class="booking-btn col-2">
+            <%= link_to "Delete Booking", @booking, data: {turbo_method: :delete, turbo_confirm: "Are you sure?"}, class: "btn btn-outline-danger hoverable" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-3 border rounded-3 shadow-sm py-4 px-5 bg-light">
+      <h2>Payment</h2>
+
+      <div>
+        <% if current_user.photo.key.nil? %>
+          <%= image_tag "https://res.cloudinary.com/twx-a/image/upload/v1661742874/development/avatarstock.jpg",
+            class: "avatar" %>
+        <% else %>
+            <%= cl_image_tag current_user.photo.key,
+            class: "avatar" %>
+        <% end %>
+        <%= @booking.user.first_name %> <%= @booking.user.last_name %>
+      </div>
+
+      <br>
+
+      <p>$<%= @booking.flat.price %> x <%= (@booking.end_date - @booking.start_date).to_i %> nights = $<%= @booking.flat.price * (@booking.end_date - @booking.start_date).to_i %></p>
+      <p>Service Fee: $0</p>
+      <p>Total: $<%= @booking.flat.price * (@booking.end_date - @booking.start_date) %></p>
+
+      <%# Need to connect this to stimulus to change payment status to true when clicked %>
+      <%= link_to "Pay Now", payment_booking_path(@booking), class: "btn btn-outline-success" %>
+    </div>
+  </div>
+  <% if @booking.end_date < Date.today %>
+    <div class="row mt-4 justify-content-around" data-controller="display-review">
+      <div class="col-10 border rounded-3 shadow-sm py-4 px-5 bg-light" data-display-review-target="review">
+      <% if @booking.review.id.nil? %>
+        <h2>Review Your Stay</h2>
+        <%= render 'reviews/new', booking: @booking, review: @review %>
+      <% else %>
+        <%= render "bookings/review", review: @review %>
+      <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

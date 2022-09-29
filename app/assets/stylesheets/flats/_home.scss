@@ -1,0 +1,30 @@
+// Specific CSS for your home-page
+
+.container{
+  background-color: white;
+}
+
+.card{
+  border: none;
+  width: 275px;
+}
+
+.round-img{
+  border-radius: 10%;
+}
+
+.flat-img {
+  height: 250px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.card-title{
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.text-small{
+  font-size: 14px;
+  color: grey;
+}

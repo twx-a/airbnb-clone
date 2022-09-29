@@ -1,0 +1,66 @@
+<div class="navbar navbar-expand-sm navbar-light navbar-lewagon sticky-top p-3 px-5 mb-3">
+  <div class="container-fluid">
+
+    <%= link_to root_path,  class: "navbar-brand ms-5" do %>
+      <%= cl_image_tag "bnblogo.png" %>
+    <% end %>
+
+    <div class="search-form-control form-group">
+      <%= form_with url: root_path, method: :get, class: "d-flex" do %>
+        <%= text_field_tag :query,
+          params[:query],
+          class: "form-control bar-mid-width",
+          id: "search_query",
+          placeholder: "Find a place!"
+        %>
+
+        <%= button_tag type:'submit', class:"btn bg-transparent text-danger" do %>
+          <i class="fa-solid fa-magnifying-glass"></i> Search!
+        <% end %>
+      <% end %>
+    </div>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-5">
+        <% if user_signed_in? %>
+          <li class="nav-item active">
+            <%= link_to "Home", root_path, class: "nav-link me-3" %>
+          </li>
+          <li class="nav-item dropdown">
+            <% if current_user.photo.key.nil? %>
+            <%= cl_image_tag "avatarstock.jpg",
+              class: "avatar dropdown-toggle",
+              id: "navbarDropdown",
+              data: { bs_toggle: "dropdown" },
+              'aria-haspopup': true,
+              'aria-expanded': false %>
+            <% else %>
+                <%= cl_image_tag current_user.photo.key,
+                class: "avatar dropdown-toggle",
+                id: "navbarDropdown",
+                data: { bs_toggle: "dropdown" },
+                'aria-haspopup': true,
+                'aria-expanded': false %>
+            <% end %>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <%= link_to "Go to Guest Dashboard", bookings_path(current_user), class: "dropdown-item" %>
+              <%= link_to "Go to Host Dashboard", flats_path(current_user), class: "dropdown-item border-bottom" %>
+              <%= link_to "Be a host! List your Flat", new_flat_path(current_user), class: "dropdown-item fst-italic fw-semibold" %>
+              <%= link_to "Manage Account",  edit_user_registration_path(current_user), class: "dropdown-item border-bottom" %>
+              <%= link_to "Log out", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item"  %>
+            </div>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to "Login", new_user_session_path, class: "nav-link" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+  </div>
+</div>
